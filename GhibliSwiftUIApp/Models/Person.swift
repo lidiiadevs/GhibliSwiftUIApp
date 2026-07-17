@@ -1,0 +1,8 @@
+//
+//  Person.swift
+//  GhibliSwiftUIApp
+//
+//  Created by Lidiia Diachkovskaia on 7/15/26.
+//
+
+import Foundation
