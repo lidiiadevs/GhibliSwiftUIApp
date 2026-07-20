@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct Film: Codable,Identifiable, Equatable {
+struct Film: Codable,Identifiable,Equatable {
     let id: String
     let title: String
     let image: String
     let description: String
     let director: String
     let producer: String
-    
+
     let people: [String]
     
     let bannerImage: String

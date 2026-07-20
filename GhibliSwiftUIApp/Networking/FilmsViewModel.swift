@@ -29,7 +29,7 @@ enum APIError: LocalizedError {
 }
 
 @Observable
-class FilmsVIewModel {
+class FilmsViewModel {
     
     enum State: Equatable {
         case idle
@@ -41,6 +41,12 @@ class FilmsVIewModel {
     var state: State = .idle
     var films: [Film] = []
     
+    private let service: GhibliAPIService
+    
+    init(service: GhibliAPIService = DefaultGhibleService()) {
+        self.service = service
+    }
+    
     func fetch() async {
         
         guard state == .idle else { return } //gotta make State class Equatable to use ==
@@ -48,29 +54,13 @@ class FilmsVIewModel {
         state = .loading
         
         do {
-            let films = try await fetchFilms()
+            let films = try await service.fetchFilms()
             self.state = .loaded(films)
+        } catch let error as APIError {
+            self.state = .error(error.errorDescription ?? "Unknown Error")
         } catch {
-            self.state = .error(error.localizedDescription)
+            self.state == .error("Unknown Error")
         }
     }
     
-    private func fetchFilms() async throws -> [Film] {
-        guard let url = URL(string: "https://ghibliapi.vercel.app/films") else { throw APIError.invalidURL }
-        
-        do {
-            let (data, response) = try await URLSession.shared.data(from: url)
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                throw APIError.invalidResponse
-            }
-            
-            return try JSONDecoder().decode([Film].self, from: data)
-        } catch let error as DecodingError {
-            throw APIError.decoding(error)
-        } catch let error as URLError {
-            throw APIError.networkError(error)
-        }
-    }
 }
