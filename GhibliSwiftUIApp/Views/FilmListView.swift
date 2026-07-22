@@ -23,17 +23,18 @@ struct FilmListView: View {
                     Text("Loading ...")
                 }
             case .loaded(let films):
-                List(films) {
-                    Text($0.title)
+                List(films) { film in
+                    NavigationLink(value: film) {
+                        Text(film.title)
+                    }
+                }
+                .navigationDestination(for: Film.self) {
+                    film in
+                    FilmDetailScreen(film: film)
                 }
             case .error(let error):
                 Text(error)
                     .foregroundStyle(.pink)
-            }
-            
-            // List(films)
-            List(filmsViewModel.films) {
-                Text($0.title)
             }
         }
         .task {
