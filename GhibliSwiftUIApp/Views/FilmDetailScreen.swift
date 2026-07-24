@@ -10,11 +10,40 @@ import SwiftUI
 struct FilmDetailScreen: View {
     let film: Film
     
+    @State private var viewModel = FilmDetailViewModel()
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment:.leading) {
+            Text(film.title)
+            
+            Divider()
+            
+            Text("Characters")
+                .font(.title3)
+      
+            switch viewModel.state {
+            case .idle: EmptyView()
+            case .loading: ProgressView()
+            case .loaded(let people):
+                ForEach(people) { person in
+                    Text(person.name)
+                }
+            case .error(let error):
+                Text(error)
+                    .foregroundStyle(.pink)
+            }
+        }
+        .padding()
+        .task(id: film) {
+            do {
+                try await viewModel.fetch(for: film)
+            } catch {
+                print(error)
+            }
+        }
     }
 }
 
-//#Preview {
-//    FilmDetailScreen()
-//}
+#Preview {
+    FilmDetailScreen(film: Film.example)
+}

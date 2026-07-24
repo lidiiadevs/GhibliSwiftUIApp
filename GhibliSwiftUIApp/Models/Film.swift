@@ -32,6 +32,11 @@ struct Film: Codable,Identifiable,Equatable,Hashable {
         case score = "rt_score"
     }
     
+    //MARK: - example for FilmDetailScreen
+    static var example: Film {
+        MockGhibliService().fetchFilm()
+    }
+    
 }
 
 import Playgrounds

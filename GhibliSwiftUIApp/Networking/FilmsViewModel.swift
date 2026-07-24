@@ -40,7 +40,7 @@ class FilmsViewModel {
         } catch let error as APIError {
             self.state = .error(error.errorDescription ?? "Unknown Error")
         } catch {
-            self.state == .error("Unknown Error")
+            self.state = .error("Unknown Error")
         }
     }
     
