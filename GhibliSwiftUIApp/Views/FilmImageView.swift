@@ -16,18 +16,24 @@ struct FilmImageView: View {
             phase in
             switch phase {
             case .empty:
-                Color.gray
+                Color(white: 0.8)
+                    .overlay{
+                        Image(systemName: "photo")
+//                        ProgressView()
+//                            .controlSize(.regular)
+            }
+                    
             case .success(let image):
                 image
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
             case .failure(let error):
                 Text("Could not get image")
             @unknown default:
                 fatalError()
             }
         }
-        .frame(height: 200)
+        //.frame(height: 200)
     //    .clipped()//for .scaledToFill
     }
 }
