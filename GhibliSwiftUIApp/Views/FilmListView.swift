@@ -9,47 +9,31 @@ import SwiftUI
 
 struct FilmListView: View {
     
-    // films: [Film]
-    
-    var filmsViewModel = FilmsViewModel()
+    var films: [Film]
     
     var body: some View {
-        NavigationStack {
-            switch filmsViewModel.state {
-            case .idle:
-                Text("No Films yet")
-            case .loading:
-                ProgressView {
-                    Text("Loading ...")
+        
+        List(films) { film in
+            NavigationLink(value: film) {
+                HStack {
+                    FilmImageView(urlPath: film.image)
+                        .frame(width: 100, height: 150)
+                    Text(film.title)
                 }
-            case .loaded(let films):
-                List(films) { film in
-                    NavigationLink(value: film) {
-                        HStack {
-                            FilmImageView(urlPath: film.image)
-                                .frame(width: 100, height: 150)
-                            Text(film.title)
-                        }
-                    }
-                }
-                .navigationDestination(for: Film.self) {
-                    film in
-                    FilmDetailScreen(film: film)
-                }
-            case .error(let error):
-                Text(error)
-                    .foregroundStyle(.pink)
             }
         }
-        .task {
-            await filmsViewModel.fetch()
+        .navigationDestination(for: Film.self) {
+            film in
+            FilmDetailScreen(film: film)
         }
     }
 }
 
+/*
 #Preview {
     @State @Previewable var vm = FilmsViewModel(service: MockGhibliService())
     
 //    FilmListView(filmsViewModel: FilmsViewModel(service: MockGhibliService()))
     FilmListView(filmsViewModel: vm)
 }
+*/
