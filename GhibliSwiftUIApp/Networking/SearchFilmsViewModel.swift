@@ -6,16 +6,32 @@
 //
 
 import Foundation
+import Observation
 
-struct SearchFilmsView: View {
-    func fetch() async {
+@Observable
+class SearchFilmsViewModel {
+    
+    var state: LoadingState<[Film]> = .idle
+    
+    private let service: GhibliAPIService
+    
+    init(service: GhibliAPIService = DefaultGhibleService()) {
+        self.service = service
+    }
+    
+    func fetch(for searchTerm: String) async {
+        try? await Task.sleep(for: .milliseconds(500))
+        guard !Task.isCancelled else { return }
+        //        guard !state.isLoading || state.error != nil else { return }
         
-        guard state == .idle else { return } //gotta make State enum Equatable to use ==
+        guard !searchTerm.isEmpty else {
+            return // []  // cannot return []
+        }
         
         state = .loading
         
         do {
-            let films = try await service.fetchFilms()
+            let films = try await service.searchFilm(for: searchTerm)
             self.state = .loaded(films)
         } catch let error as APIError {
             self.state = .error(error.errorDescription ?? "Unknown Error")

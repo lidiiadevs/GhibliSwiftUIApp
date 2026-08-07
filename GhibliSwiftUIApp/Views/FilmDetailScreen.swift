@@ -60,24 +60,7 @@ struct FilmDetailScreen: View {
     }
 }
 
-struct FavoriteButton: View {
-    
-    let filmID: String
-    let favoritesViewModel: FavoritesViewModel
-    
-    var isFavorite: Bool {
-        favoritesViewModel.isFavorite(filmID: filmID)
-    }
-    
-    var body: some View {
-        Button {
-            favoritesViewModel.toggleFavorite(filmID: filmID)
-        } label: {
-            Image(systemName: isFavorite ? "heart.fill" : "heart")
-                .foregroundStyle(isFavorite ? .pink : .gray)
-        }
-    }
-}
+
 
 #Preview {
     NavigationStack {

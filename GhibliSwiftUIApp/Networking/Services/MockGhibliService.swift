@@ -34,6 +34,13 @@ struct MockGhibliService: GhibliAPIService {
         return data.films
     }
     
+    func searchFilm(for searchTerm: String) async throws -> [Film] {
+        let allFilms = try await fetchFilms() //dont have a search emdpoint otherwise would do this here
+        
+        return allFilms.filter { film in
+            film.title.localizedStandardContains(searchTerm)
+        }
+    }
     
     func fetchPerson(from URLString: String) async throws -> Person {
         let data = try loadSampleData()

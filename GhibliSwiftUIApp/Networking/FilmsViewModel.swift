@@ -11,16 +11,8 @@ import Observation
 
 @Observable
 class FilmsViewModel {
-    
-    enum State: Equatable {
-        case idle
-        case loading
-        case loaded([Film])
-        case error(String)
-    }
-    
-    var state: State = .idle
-    var films: [Film] = []
+        
+    var state: LoadingState<[Film]> = .idle
     
     private let service: GhibliAPIService
     
@@ -29,8 +21,7 @@ class FilmsViewModel {
     }
     
     func fetch() async {
-        
-        guard state == .idle else { return } //gotta make State enum Equatable to use ==
+        guard !state.isLoading || state.data != nil else { return } //gotta make State enum Equatable to use ==
         
         state = .loading
         
@@ -44,4 +35,12 @@ class FilmsViewModel {
         }
     }
     
+    
+    //MARK: - Preview
+    
+    static var example: FilmsViewModel {
+        let vm = FilmsViewModel(service: MockGhibliService())
+        vm.state = .loaded([Film.example])
+        return vm
+    }
 }

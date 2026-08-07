@@ -30,10 +30,6 @@ private struct FilmRow: View {
     let film: Film
     let favoritesViewModel: FavoritesViewModel
     
-    var isFavorite: Bool {
-        favoritesViewModel.isFavorite(filmID: film.id)
-    }
-    
     var body: some View {
         HStack(alignment: .top) {
             FilmImageView(urlPath: film.image)
@@ -62,15 +58,15 @@ private struct FilmRow: View {
     }
 }
 
-/*
+
 #Preview {
 
     @State @Previewable var favorites = FavoritesViewModel(service: MockFavoriteStorage())
     
-   // FilmListView(filmsViewModel: FilmsViewModel(service: MockGhibliService()))
+    NavigationStack {
         FilmListView(films: [Film.example], favoritesViewModel: favorites)
+    }
     .task {
             favorites.load()
         }
 }
-*/

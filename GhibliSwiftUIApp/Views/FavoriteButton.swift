@@ -1,3 +1,11 @@
+//
+//  FavoriteButton.swift
+//  GhibliSwiftUIApp
+//
+//  Created by Lidiia Diachkovskaia on 8/5/26.
+//
+
+
 import SwiftUI
 
 struct FavoriteButton: View {

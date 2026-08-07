@@ -10,15 +10,36 @@ import SwiftUI
 struct SearchScreen: View {
     
     @State private var text: String = ""
+    @State private var searchViewModel = SearchFilmsViewModel()
+    let favoritesViewModel: FavoritesViewModel
+    
+    init(favoritesVewModel: FavoritesViewModel, service: GhibliAPIService = DefaultGhibleService()) {
+        self.favoritesViewModel = favoritesVewModel
+        self.searchViewModel = SearchFilmsViewModel(service: service)
+    }
     
     var body: some View {
         NavigationStack {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            VStack {
+                switch searchViewModel.state {
+                case .idle:
+                    Text("Show search here")
+                case .loading:
+                    ProgressView()
+                case .error(let error):
+                    Text(error)
+                case .loaded(let films):
+                    FilmListView(films: films, favoritesViewModel: favoritesViewModel)
+                }
+            }
                 .searchable(text: $text)
+                .task(id: text) {
+                    await searchViewModel.fetch(for: text)
+                }
         }
     }
 }
 
 #Preview {
-    SearchScreen()
+    SearchScreen(favoritesVewModel: FavoritesViewModel(service: MockFavoriteStorage()))
 }

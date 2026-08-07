@@ -24,11 +24,12 @@ struct ContentView: View {
                 SettingsScreen()
             }
             Tab(role: .search) {
-                SearchScreen()
+                SearchScreen(favoritesVewModel: favoritesViewModel)
             }
         }
         .task {
             favoritesViewModel.load()
+            await filmsViewModel.fetch()
         }
     }
 }
