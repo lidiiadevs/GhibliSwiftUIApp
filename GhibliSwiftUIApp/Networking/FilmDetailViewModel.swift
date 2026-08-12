@@ -5,6 +5,7 @@
 //  Created by Lidiia Diachkovskaia on 7/20/26.
 //
 
+
 import Foundation
 import Observation
 
@@ -19,8 +20,7 @@ class FilmDetailViewModel {
         self.service = service
     }
     
-    func fetch(for film: Film) async throws {
-        
+    func fetch(for film: Film) async {
         guard !state.isLoading else { return }
         
         state = .loading
@@ -28,15 +28,15 @@ class FilmDetailViewModel {
         var loadedPeople: [Person] = []
     
         do {
-            try await withThrowingTaskGroup(of: Person.self) { group in // Run multiple async tasks in parallel, collect their results, and if any task throws an error, throw that error and cancel the remaining tasks. 
+            try await withThrowingTaskGroup(of: Person.self) { group in // Runs multiple async tasks in parallel, collect their results, and if any task throws an error, throw that error and cancel the remaining tasks.
                 
                 for personInfoURL in film.people {
-                   // print("start fetch for \(personInfoURL)")
                     group.addTask {
-                    try await self.service.fetchPerson(from: personInfoURL)
+                        try await self.service.fetchPerson(from: personInfoURL)
                     }
                 }
-                //collect results as they complete
+                
+                // collect results as they complete
                 for try await person in group {
                     loadedPeople.append(person)
                 }
@@ -44,15 +44,14 @@ class FilmDetailViewModel {
             
             state = .loaded(loadedPeople)
             
-        } catch let error as DecodingError {
-            throw APIError.decoding(error)
-        } catch let error as URLError {
-            throw APIError.networkError(error)
+            
+        }  catch let error as APIError {
+            self.state = .error(error.errorDescription ?? "unknown error")
+        } catch {
+            self.state = .error("unknown error")
         }
-        
     }
 }
-
 
 import Playgrounds
 
@@ -61,15 +60,17 @@ import Playgrounds
     let vm = FilmDetailViewModel(service: service)
     
     let film = service.fetchFilm()
-    try await vm.fetch(for: film)
+    await vm.fetch(for: film)
     
     switch vm.state {
-    case .loading: print("Loading")
-    case .idle: print("idle")
-    case .loaded(let people):
-        for person in people {
-        print(person)
+        case .loading: print("loading")
+        case .idle: print("idle")
+        case .loaded(let people):
+            for person in people {
+                print(person)
+            }
+        case .error(let error): print(error)
     }
-    case .error(let error): print(error)
-    }
+    
 }
+
