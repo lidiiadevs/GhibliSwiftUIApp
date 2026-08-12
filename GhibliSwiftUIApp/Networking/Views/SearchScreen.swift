@@ -13,7 +13,7 @@ struct SearchScreen: View {
     @State private var searchViewModel = SearchFilmsViewModel()
     let favoritesViewModel: FavoritesViewModel
     
-    init(favoritesVewModel: FavoritesViewModel, service: GhibliAPIService = DefaultGhibleService()) {
+    init(favoritesVewModel: FavoritesViewModel, service: GhibliAPIService = DefaultGhibliService()) {
         self.favoritesViewModel = favoritesVewModel
         self.searchViewModel = SearchFilmsViewModel(service: service)
     }
@@ -32,10 +32,11 @@ struct SearchScreen: View {
                     FilmListView(films: films, favoritesViewModel: favoritesViewModel)
                 }
             }
-                .searchable(text: $text)
-                .task(id: text) {
-                    await searchViewModel.fetch(for: text)
-                }
+            .navigationTitle("Search Ghibli Movies")
+            .searchable(text: $text)
+            .task(id: text) {
+                await searchViewModel.fetch(for: text)
+            }
         }
     }
 }

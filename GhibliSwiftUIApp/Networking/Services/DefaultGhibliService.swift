@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct DefaultGhibleService: GhibliAPIService {
+
+struct DefaultGhibliService: GhibliAPIService {
     
     
     func fetch<T: Decodable> (from URLString: String, type: T.Type) async throws -> T {
@@ -45,6 +46,20 @@ struct DefaultGhibleService: GhibliAPIService {
     func fetchPerson(from URLString: String) async throws -> Person {
         return try await fetch(from: URLString, type: Person.self)
     }
+}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 //        guard let url = URL(string: "https://ghibliapi.vercel.app/films") else { throw APIError.invalidURL }
 //
 //        do {
@@ -62,7 +77,7 @@ struct DefaultGhibleService: GhibliAPIService {
 //            throw APIError.networkError(error)
 //        }
 //    }
-}
+//}
     
 
 //class AuthRepository { // we csll it a repository

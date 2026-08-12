@@ -16,7 +16,7 @@ class FilmsViewModel {
     
     private let service: GhibliAPIService
     
-    init(service: GhibliAPIService = DefaultGhibleService()) {
+    init(service: GhibliAPIService = DefaultGhibliService()) {
         self.service = service
     }
     
